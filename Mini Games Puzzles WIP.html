@@ -143,8 +143,10 @@
             justify-content: center;
             font-weight: bold;
         }
+
+        /* #tetris-icon styles are created dynamically in its createIcon function */
         
-        /* --- GENERIC STYLED BUTTON (to be used by both games) --- */
+        /* --- GENERIC STYLED BUTTON (to be used by all games) --- */
          .styled-button {
             padding: 10px 18px;
             color: white;
@@ -163,61 +165,99 @@
         #lights-out-game .controls-container{display:flex;flex-direction:column;align-items:center;gap:15px;margin-bottom:20px;background-color:#E1BEE7;padding:15px;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,.1);max-width:90%}#lights-out-game .grid-setup-controls,#lights-out-game .image-upload-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}#lights-out-game .grid-setup-controls label,#lights-out-game .image-upload-controls label{font-weight:700}#lights-out-game .grid-setup-controls input[type=number]{width:60px;padding:8px;border:1px solid #CE93D8;border-radius:5px;text-align:center;font-size:1em;background-color:#fff;color:#4A148C;-moz-appearance:textfield}#lights-out-game .grid-setup-controls input[type=number]::-webkit-outer-spin-button,#lights-out-game .grid-setup-controls input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}#lights-out-game .styled-button{background-color:#8E44AD}#lights-out-game .styled-button:hover{background-color:#7B1FA2}#lights-out-game .styled-button:disabled{background-color:#BEA0D0}#lights-out-game .solver-controls{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:5px}#lights-out-game #solver-options{display:flex;gap:10px}#lights-out-game #step-counter{font-weight:700;color:#6A1B9A;font-size:.9em;min-height:1.2em}#lights-out-game #solver-message,#lights-out-game #image-message{font-size:.85em;color:#7B1FA2;min-height:1em;text-align:center}#lights-out-game #game-container{overflow:auto;max-width:95vw;max-height:60vh;margin-bottom:10px}#lights-out-game #game-grid{display:grid;border:2px solid #AB47BC;background-color:#E1BEE7;padding:5px;box-shadow:0 6px 12px rgba(0,0,0,.15);border-radius:5px}#lights-out-game .cell{width:50px;height:50px;background-color:#F3E5F5;border:1px solid #CE93D8;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color .2s ease,outline .2s ease,box-shadow .2s ease;box-sizing:border-box}#lights-out-game .cell.on{background-color:#8E44AD}#lights-out-game .cell:hover:not(.disabled-cell){background-color:#BA68C8}#lights-out-game .cell.on:hover:not(.disabled-cell){background-color:#9C27B0}#lights-out-game .cell.disabled-cell{cursor:not-allowed}#lights-out-game .cell.highlight-auto-click{background-color:#ef9a9a!important;transform:scale(1.1);transition:background-color .05s ease-out,transform .05s ease-out}#lights-out-game .cell.highlight-next-step{outline:3px solid #d32f2f;outline-offset:-3px;box-shadow:0 0 8px #d32f2f}#lights-out-game #win-message{margin-top:15px;padding:15px;background-color:#C8E6C9;color:#2E7D32;border:1px solid #A5D6A7;border-radius:5px;font-size:1.2em;font-weight:700;display:none;box-shadow:0 2px 4px rgba(0,0,0,.1)}#lights-out-game #image-color-choice-dialog,#lights-out-game #image-grid-setup-dialog{margin-top:15px;padding:15px;background-color:#E1BEE7;border:1px solid #AB47BC;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);text-align:center}#lights-out-game #image-color-choice-dialog p,#lights-out-game #image-grid-setup-dialog p{margin-bottom:10px;font-weight:700}#lights-out-game .color-option{display:flex;align-items:center;margin-bottom:8px;justify-content:center}#lights-out-game .color-option input[type=radio]{margin-right:8px}#lights-out-game .color-swatch{width:20px;height:20px;border:1px solid #4A148C;margin-right:8px;display:inline-block}#lights-out-game #processing-canvas{display:none}@media (max-width:600px){#lights-out-game .grid-setup-controls,#lights-out-game .image-upload-controls{flex-direction:column}}
         
         /* [START] SUDOKU PUZZLE CSS */
-        #sudoku-game .controls-container {
-            display: flex;
-            flex-direction: column; align-items: center; gap: 15px; margin-bottom: 20px; background-color: var(--sudoku-bg-light);
-            padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 90%; color: var(--sudoku-text-dark);
-        }
+        #sudoku-game .controls-container { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 20px; background-color: var(--sudoku-bg-light); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 90%; color: var(--sudoku-text-dark); }
         #sudoku-difficulty-selector { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
         #sudoku-difficulty-selector .styled-button { font-size: 0.9em; padding: 8px 12px; }
-
         #sudoku-game .styled-button { background-color: var(--sudoku-button); }
         #sudoku-game .styled-button:hover { background-color: var(--sudoku-button-hover); }
         #sudoku-game .styled-button:disabled { background-color: #FFCC80; }
         #sudoku-game .solver-controls { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 5px; }
         #sudoku-game #sudoku-step-counter { font-weight: bold; font-size: 0.9em; min-height: 1.2em; }
         #sudoku-game #sudoku-solver-message { font-size: 0.85em; min-height: 1.5em; text-align: center; color: var(--sudoku-text-medium); max-width: 400px;}
-
-        #sudoku-grid-container {
-            border: 3px solid var(--sudoku-text-medium);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            border-radius: 5px;
-        }
+        #sudoku-grid-container { border: 3px solid var(--sudoku-text-medium); box-shadow: 0 6px 12px rgba(0,0,0,0.15); border-radius: 5px; }
         #sudoku-grid { border-collapse: collapse; }
-        .sudoku-cell {
-            width: 45px; height: 45px; background-color: var(--sudoku-bg-lightest); color: var(--sudoku-text-dark);
-            border: 1px solid var(--sudoku-border); font-size: 1.5em; box-sizing: border-box; transition: background-color 0.2s;
-            text-align: center; vertical-align: middle;
-        }
+        .sudoku-cell { width: 45px; height: 45px; background-color: var(--sudoku-bg-lightest); color: var(--sudoku-text-dark); border: 1px solid var(--sudoku-border); font-size: 1.5em; box-sizing: border-box; transition: background-color 0.2s; text-align: center; vertical-align: middle; }
         #sudoku-grid td:nth-child(3), #sudoku-grid td:nth-child(6) { border-right: 3px solid var(--sudoku-text-medium); }
         #sudoku-grid tr:nth-child(3) td, #sudoku-grid tr:nth-child(6) td { border-bottom: 3px solid var(--sudoku-text-medium); }
         .sudoku-cell.puzzle-given { background-color: var(--sudoku-bg-light); font-weight: bold; }
         .sudoku-cell:not(.puzzle-given) { cursor: pointer; }
         .sudoku-cell:not(.puzzle-given):hover { background-color: #FFCC80; }
         .sudoku-cell.selected { background-color: #FFB74D !important; outline: 2px solid var(--sudoku-text-dark); }
-        
         .sudoku-cell.disabled-cell { cursor: not-allowed !important; background-color: #f2f2f2 !important; }
         .number-picker { display: flex; gap: 5px; margin-top: 10px; }
-        .number-picker div {
-            width: 35px; height: 35px; background-color: #fff; border: 1px solid var(--sudoku-border); border-radius: 5px;
-            display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.2em;
-            color: var(--sudoku-text-dark); transition: all 0.2s;
-        }
+        .number-picker div { width: 35px; height: 35px; background-color: #fff; border: 1px solid var(--sudoku-border); border-radius: 5px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.2em; color: var(--sudoku-text-dark); transition: all 0.2s; }
         .number-picker div:hover { background-color: #FFE0B2; }
         .number-picker .erase { font-size: 1em; }
+        #sudoku-win-message {  margin-top: 15px; padding: 15px; background-color: #C8E6C9; color: #2E7D32; border: 1px solid #A5D6A7; border-radius: 5px; font-size: 1.2em; font-weight: bold; display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
         
-        #sudoku-win-message { 
-             margin-top: 15px; padding: 15px; background-color: #C8E6C9; color: #2E7D32;
-             border: 1px solid #A5D6A7; border-radius: 5px; font-size: 1.2em; font-weight: bold;
-             display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-             text-align: center;
-        }
-
         @media (max-width: 768px) {
             .sudoku-cell { width: 35px; height: 35px; font-size: 1.2em; }
             .nav-arrow { width: 50px; height: 50px; }
         }
         /* [END] SUDOKU PUZZLE CSS */
+
+
+        /* [START] TETRIS PUZZLE CSS */
+        #tetris-game {
+            color: #fff;
+            font-family: monospace;
+             --board-width: 300px;
+            --board-height: 600px;
+            --border-style: 2px solid white;
+        }
+        #tetris-game .game-container {
+            display: flex;
+            gap: 30px; /* Space between board and side panel */
+            align-items: flex-start;
+            position: relative; /* For overlays */
+        }
+        #tetris-game canvas#game-board {
+            border: var(--border-style);
+        }
+        #tetris-game .side-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 120px; /* Width of the next piece canvas */
+        }
+        #tetris-game #score {
+            font-size: 2em;
+            margin-bottom: 20px;
+            min-height: 32px; /* Prevent layout shift */
+        }
+        #tetris-game #next-piece-canvas {
+            border: var(--border-style);
+        }
+        #tetris-game #pause-button {
+            margin-top: 20px;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        #tetris-game .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: var(--board-width);
+            height: var(--board-height);
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+        }
+        #tetris-game #game-over button {
+            margin-top: 25px;
+            padding: 12px 24px;
+            font-size: 0.5em;
+            cursor: pointer;
+            background-color: white;
+            color: black;
+            border: none;
+            font-weight: bold;
+        }
+        /* [END] TETRIS PUZZLE CSS */
     </style>
 </head>
 <body>
@@ -231,10 +271,12 @@
         </div>
 
         <div class="game-view-container">
+            <!-- Lights Out Game -->
             <div id="lights-out-game" class="game-wrapper active">
                 <h1>Lights Out!</h1><div class="controls-container"><div class="grid-setup-controls"><label for="rows-input">Rows:</label><input type="number" id="rows-input" value="5" min="1"><label for="cols-input">Columns:</label><input type="number" id="cols-input" value="5" min="1"><button id="regenerate-button" class="styled-button">Regenerate Puzzle</button></div><div class="image-upload-controls"><input type="file" id="image-file-input" accept="image/*" style="display:none"><button id="upload-image-button" class="styled-button">Upload Image of Puzzle</button></div><div id="image-message"></div><div id="image-color-choice-dialog" style="display:none"><p>Detected Dominant Colors. Which is the 'ON' state (to get rid of)?</p><div id="color-options-container"></div><button id="confirm-image-import-button" class="styled-button" style="margin-top:10px">Confirm and Import Puzzle</button></div><div id="image-grid-setup-dialog" style="display:none"><p>Enter grid dimensions for the puzzle in the image:</p><div class="grid-setup-controls"><label for="image-import-rows">Rows:</label><input type="number" id="image-import-rows" value="5" min="1"><label for="image-import-cols">Columns:</label><input type="number" id="image-import-cols" value="5" min="1"></div><button id="confirm-dimensions-button" class="styled-button" style="margin-top:10px">Import with these Dimensions</button></div><div class="solver-controls"><button id="solve-main-button" class="styled-button">Solve Puzzle</button><div id="solver-options" style="display:none"><button id="show-steps-button" class="styled-button">Show Steps</button><button id="auto-solve-button" class="styled-button">Auto Solve</button></div><span id="step-counter"></span><span id="solver-message"></span></div></div><canvas id="processing-canvas"></canvas><div id="game-container"><div id="game-grid"></div></div><div id="win-message">Congratulations! You solved the puzzle!</div>
             </div>
 
+            <!-- Sudoku Game -->
             <div id="sudoku-game" class="game-wrapper">
                 <div class="controls-container">
                     <div id="sudoku-difficulty-selector">
@@ -256,6 +298,24 @@
                     <button id="sudoku-play-again-btn" class="styled-button" style="margin-top: 10px;">Play Again</button>
                 </div>
             </div>
+
+             <!-- Tetris Game -->
+            <div id="tetris-game" class="game-wrapper">
+                 <div class="game-container">
+                    <canvas id="game-board"></canvas>
+                    <div class="side-panel">
+                        <p id="score">0</p>
+                        <canvas id="next-piece-canvas"></canvas>
+                        <p id="pause-button">PAUSE</p>
+                    </div>
+                    
+                    <div id="game-paused" class="overlay">PAUSED</div>
+                    <div id="game-over" class="overlay">
+                        GAME OVER
+                        <button id="tetris-restart-btn">RESTART</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="next-game-arrow" class="nav-arrow">
@@ -268,14 +328,78 @@
     <div class="game-selector-container"></div>
 
     <script>
-    // --- MULTI-GAME MANAGEMENT LOGIC (No changes, omitted for brevity)
+    // --- MULTI-GAME MANAGEMENT LOGIC ---
     document.addEventListener('DOMContentLoaded', () => {
-        const games=[{id:'lights-out',name:'Lights Out!',theme:{bodyBG:'#F3E5F5',titleColor:'#6A1B9A',arrowFill:'#E1BEE7',arrowBorder:'#AB47BC',selectorBorder:'#CE93D8'},init:initLightsOut,createIcon:createLightsOutIcon},{id:'sudoku',name:'Sudoku',theme:{bodyBG:'var(--sudoku-bg-lightest)',titleColor:'var(--sudoku-text-medium)',arrowFill:'var(--sudoku-bg-light)',arrowBorder:'var(--sudoku-text-medium)',selectorBorder:'var(--sudoku-border)'},init:initSudoku,createIcon:createSudokuIcon}];
-        let currentGameIndex=0;const mainTitle=document.getElementById('main-title');const prevArrow=document.getElementById('prev-game-arrow');const nextArrow=document.getElementById('next-game-arrow');const gameWrappers=document.querySelectorAll('.game-wrapper');const selectorContainer=document.querySelector('.game-selector-container');function createLightsOutIcon(){const icon=document.createElement('div');icon.id='lights-out-icon';const pattern=[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1];pattern.forEach(p=>{const cell=document.createElement('div');cell.className='lo-icon-cell'+(p?' on':'');icon.appendChild(cell);});return icon;}
+        // Expose a control object for Tetris to be managed by the switcher
+        const tetrisControl = {};
+
+        const games=[
+            {id:'lights-out',name:'Lights Out!',theme:{bodyBG:'#F3E5F5',titleColor:'#6A1B9A',arrowFill:'#E1BEE7',arrowBorder:'#AB47BC',selectorBorder:'#CE93D8'},init:initLightsOut,createIcon:createLightsOutIcon},
+            {id:'sudoku',name:'Sudoku',theme:{bodyBG:'var(--sudoku-bg-lightest)',titleColor:'var(--sudoku-text-medium)',arrowFill:'var(--sudoku-bg-light)',arrowBorder:'var(--sudoku-text-medium)',selectorBorder:'var(--sudoku-border)'},init:initSudoku,createIcon:createSudokuIcon},
+            {id:'tetris',name:'Monochrome Tetris',theme:{bodyBG:'#000000',titleColor:'#FFFFFF',arrowFill:'#333333',arrowBorder:'#FFFFFF',selectorBorder:'#FFFFFF'},init:() => initTetris(tetrisControl),createIcon:createTetrisIcon}
+        ];
+        
+        let currentGameIndex=0;const mainTitle=document.getElementById('main-title');const prevArrow=document.getElementById('prev-game-arrow');const nextArrow=document.getElementById('next-game-arrow');const gameWrappers=document.querySelectorAll('.game-wrapper');const selectorContainer=document.querySelector('.game-selector-container');
+        
+        function createLightsOutIcon(){const icon=document.createElement('div');icon.id='lights-out-icon';const pattern=[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1];pattern.forEach(p=>{const cell=document.createElement('div');cell.className='lo-icon-cell'+(p?' on':'');icon.appendChild(cell);});return icon;}
         function createSudokuIcon(){const icon=document.createElement('div');icon.id='sudoku-icon';const pattern=['5','3','','6','','','','9','8'];pattern.forEach(p=>{const cell=document.createElement('div');cell.className='su-icon-cell';cell.textContent=p;icon.appendChild(cell);});return icon;}
-        function updateGameSelection(){const theme=games[currentGameIndex].theme;gameWrappers.forEach((wrapper,index)=>{wrapper.classList.toggle('active',index===currentGameIndex);});const icons=selectorContainer.querySelectorAll('.game-selector-icon');icons.forEach((icon,index)=>{icon.classList.toggle('selected',index===currentGameIndex);icon.style.borderColor=games[index].theme.selectorBorder;});document.body.style.backgroundColor=theme.bodyBG;mainTitle.style.color=theme.titleColor;mainTitle.textContent=games[currentGameIndex].name;prevArrow.style.backgroundColor=theme.arrowFill;prevArrow.style.borderColor=theme.arrowBorder;nextArrow.style.backgroundColor=theme.arrowFill;nextArrow.style.borderColor=theme.arrowBorder;}
+        
+        function createTetrisIcon(){
+            const icon=document.createElement('div');icon.id='tetris-icon';
+            icon.style.display='grid';
+            icon.style.gridTemplateColumns='repeat(5, 1fr)'; // Use 5x5 for centering
+            icon.style.gap='3px';
+            icon.style.backgroundColor='#333';
+            // Pattern for a T-piece centered in a 5x5 grid
+            const pattern=[
+                0,0,0,0,0,
+                0,0,1,0,0,
+                0,1,1,1,0,
+                0,0,0,0,0,
+                0,0,0,0,0
+            ];
+            pattern.forEach(p=>{const cell=document.createElement('div');cell.style.backgroundColor=p?'white':'transparent';icon.appendChild(cell);});
+            return icon;
+        }
+
+        function updateGameSelection(){
+            gameWrappers.forEach((wrapper,index)=>{wrapper.classList.toggle('active',index===currentGameIndex);});
+            const icons=selectorContainer.querySelectorAll('.game-selector-icon');
+            icons.forEach((icon,index)=>{icon.classList.toggle('selected',index===currentGameIndex);icon.style.borderColor=games[index].theme.selectorBorder;});
+            const theme=games[currentGameIndex].theme;
+            document.body.style.backgroundColor=theme.bodyBG;
+            mainTitle.style.color=theme.titleColor;
+            mainTitle.textContent=games[currentGameIndex].name;
+            prevArrow.style.backgroundColor=theme.arrowFill;
+            prevArrow.style.borderColor=theme.arrowBorder;
+            nextArrow.style.backgroundColor=theme.arrowFill;
+            nextArrow.style.borderColor=theme.arrowBorder;
+
+            // Auto-pause/resume logic for Tetris
+            games.forEach((game, index) => {
+                if (game.id === 'tetris' && tetrisControl.pause && tetrisControl.resume) {
+                    if (index === currentGameIndex) { // Tetris is now the active game
+                        tetrisControl.resume();
+                    } else { // Tetris is no longer the active game
+                        tetrisControl.pause();
+                    }
+                }
+            });
+        }
+        
         function switchGame(direction){currentGameIndex+=direction;if(currentGameIndex>=games.length){currentGameIndex=0;}else if(currentGameIndex<0){currentGameIndex=games.length-1;}updateGameSelection();}
-        prevArrow.addEventListener('click',()=>switchGame(-1));nextArrow.addEventListener('click',()=>switchGame(1));games.forEach((game,index)=>{const iconContainer=game.createIcon();iconContainer.classList.add('game-selector-icon');iconContainer.dataset.index=index;iconContainer.addEventListener('click',()=>{if(currentGameIndex!==index){currentGameIndex=index;updateGameSelection();}});selectorContainer.appendChild(iconContainer);if(typeof game.init==='function'){game.init();}});updateGameSelection();
+        prevArrow.addEventListener('click',()=>switchGame(-1));nextArrow.addEventListener('click',()=>switchGame(1));
+        
+        games.forEach((game,index)=>{
+            const iconContainer=game.createIcon();
+            iconContainer.classList.add('game-selector-icon');
+            iconContainer.dataset.index=index;
+            iconContainer.addEventListener('click',()=>{if(currentGameIndex!==index){currentGameIndex=index;updateGameSelection();}});
+            selectorContainer.appendChild(iconContainer);
+            if(typeof game.init==='function'){game.init();}
+        });
+        
+        updateGameSelection();
     });
 
     // --- LIGHTS OUT GAME LOGIC (Unchanged, omitted for brevity)
@@ -306,165 +430,231 @@
         regenerateButton.addEventListener('click',regenerate);createGridDOM();randomizePuzzle();
     }
 
-    // --- SUDOKU GAME LOGIC ---
+    // --- SUDOKU GAME LOGIC (Unchanged, omitted for brevity)
     function initSudoku() {
-        const sudokuGrid = document.getElementById('sudoku-grid');
-        const numberPicker = document.getElementById('sudoku-number-picker');
-        const winMessage = document.getElementById('sudoku-win-message');
-        const playAgainBtn = document.getElementById('sudoku-play-again-btn');
-        const autoSolveBtn = document.getElementById('sudoku-auto-solve-button');
-        const stepCounter = document.getElementById('sudoku-step-counter');
-        const solverMessage = document.getElementById('sudoku-solver-message');
+        const sudokuGrid = document.getElementById('sudoku-grid'); const numberPicker = document.getElementById('sudoku-number-picker'); const winMessage = document.getElementById('sudoku-win-message'); const playAgainBtn = document.getElementById('sudoku-play-again-btn'); const autoSolveBtn = document.getElementById('sudoku-auto-solve-button'); const stepCounter = document.getElementById('sudoku-step-counter'); const solverMessage = document.getElementById('sudoku-solver-message'); const difficultyLevels = { easy: 40, normal: 48, hard: 54, extreme: 60 }; let lastDifficulty = difficultyLevels.normal; document.getElementById('sudoku-easy-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.easy)); document.getElementById('sudoku-normal-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.normal)); document.getElementById('sudoku-hard-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.hard)); document.getElementById('sudoku-extreme-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.extreme)); playAgainBtn.addEventListener('click', () => generatePuzzle(lastDifficulty)); let board = [], solution = [], puzzleStart = []; let selectedCell = {td: null, r: -1, c: -1}; let isAutoSolving = false, isGameWon = false; let autoSolveIntervalId = null; function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; } function solveSudokuBacktracking(grid) { for(let r = 0; r < 9; r++) for(let c = 0; c < 9; c++) if(grid[r][c] === 0) { for(let num of shuffle([1,2,3,4,5,6,7,8,9])) { if(isValid(grid, r, c, num)) { grid[r][c] = num; if(solveSudokuBacktracking(grid)) return true; grid[r][c] = 0; } } return false; } return true; } function generatePuzzle(holesToPoke) { lastDifficulty = holesToPoke; resetSudokuState(); board = Array(9).fill(null).map(() => Array(9).fill(0)); solveSudokuBacktracking(board); solution = JSON.parse(JSON.stringify(board)); let attempts = holesToPoke; while(attempts > 0) { const r = Math.floor(Math.random() * 9), c = Math.floor(Math.random() * 9); if (board[r][c] !== 0) { board[r][c] = 0; attempts--; } } puzzleStart = JSON.parse(JSON.stringify(board));  renderGrid(); } function isValid(grid, r, c, num) { for(let i = 0; i < 9; i++) if(grid[r][i] === num || grid[i][c] === num) return false; const boxRowStart = Math.floor(r/3) * 3, boxColStart = Math.floor(c/3) * 3; for(let i = 0; i < 3; i++) for(let j = 0; j < 3; j++) if(grid[boxRowStart + i][boxColStart + j] === num) return false; return true; } function prepareBoardForSolver() { for (let r = 0; r < 9; r++) { for (let c = 0; c < 9; c++) { if (puzzleStart[r][c] === 0 && board[r][c] !== 0) { if (board[r][c] !== solution[r][c]) { board[r][c] = 0;  sudokuGrid.rows[r].cells[c].textContent = ''; } } } } } function renderGrid() { sudokuGrid.innerHTML = ''; for(let r=0; r<9; r++) { const tr = sudokuGrid.insertRow(); for(let c=0; c<9; c++) { const td = tr.insertCell(); td.classList.add('sudoku-cell'); if(board[r][c] !== 0) {  td.textContent = board[r][c];  if(puzzleStart[r][c] !== 0) td.classList.add('puzzle-given'); } if(!td.classList.contains('puzzle-given')) { td.addEventListener('click', () => handleCellClick(td, r, c)); } } } } function handleCellClick(td, r, c) { if(isAutoSolving || isGameWon) return; if(selectedCell.td) selectedCell.td.classList.remove('selected'); selectedCell = {td, r, c}; td.classList.add('selected'); } function handleNumberPick(num) { if(!selectedCell.td || isAutoSolving || isGameWon) return; const {r, c} = selectedCell; board[r][c] = num; selectedCell.td.textContent = num === 0 ? '' : num; checkWin(); } function checkWin() { if (isGameWon) return true; for(let r=0; r<9; r++) for(let c=0; c<9; c++) if (board[r][c] === 0 || board[r][c] !== solution[r][c]) return false; isGameWon = true; winMessage.style.display = 'block'; solverMessage.textContent = 'You solved it!'; updateSudokuSolverButtons(); if(selectedCell.td) selectedCell.td.classList.remove('selected'); return true; } function updateSudokuSolverButtons() { document.querySelectorAll('#sudoku-difficulty-selector button').forEach(btn => btn.disabled = isAutoSolving || isGameWon); autoSolveBtn.disabled = isAutoSolving || isGameWon; } function resetSudokuState() { if (autoSolveIntervalId) clearInterval(autoSolveIntervalId); isAutoSolving = false; isGameWon = false; autoSolveIntervalId = null; winMessage.style.display = 'none'; solverMessage.textContent = ''; stepCounter.textContent = ''; updateSudokuSolverButtons(); } autoSolveBtn.addEventListener('click', () => { if (isGameWon) return;  prepareBoardForSolver(); isAutoSolving = true; updateSudokuSolverButtons(); solverMessage.textContent = "Auto-solving..."; let steps = []; for(let r=0; r<9; r++) for(let c=0; c<9; c++) if(board[r][c] === 0) steps.push({r,c}); let i = 0; autoSolveIntervalId = setInterval(() => { if(i >= steps.length) { clearInterval(autoSolveIntervalId); checkWin(); return; } const {r, c} = steps[i]; sudokuGrid.rows[r].cells[c].textContent = solution[r][c]; board[r][c] = solution[r][c]; i++; stepCounter.textContent = `Step: ${i} / ${steps.length}`; }, 50); }); numberPicker.innerHTML = ''; for(let i=1; i<=9; i++) { const numDiv = document.createElement('div'); numDiv.textContent = i; numDiv.dataset.number = i; numDiv.addEventListener('click', () => handleNumberPick(i)); numberPicker.appendChild(numDiv); } const eraseDiv = document.createElement('div'); eraseDiv.textContent = 'X'; eraseDiv.classList.add('erase'); eraseDiv.addEventListener('click', () => handleNumberPick(0)); numberPicker.appendChild(eraseDiv); generatePuzzle(difficultyLevels.normal);
+    }
+    
+    // --- TETRIS GAME LOGIC ---
+    function initTetris(tetrisControl) {
+        const gameWrapper = document.getElementById('tetris-game');
+        const canvas = gameWrapper.querySelector('#game-board');
+        const context = canvas.getContext('2d');
+        const nextCanvas = gameWrapper.querySelector('#next-piece-canvas');
+        const nextContext = nextCanvas.getContext('2d');
+        const pauseButton = gameWrapper.querySelector('#pause-button');
+        const restartButton = gameWrapper.querySelector('#tetris-restart-btn');
+        const scoreDisplay = gameWrapper.querySelector('#score');
+        const gameOverOverlay = gameWrapper.querySelector('#game-over');
+        const pauseOverlay = gameWrapper.querySelector('#game-paused');
         
-        const difficultyLevels = { easy: 40, normal: 48, hard: 54, extreme: 60 };
-        let lastDifficulty = difficultyLevels.normal;
-        document.getElementById('sudoku-easy-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.easy));
-        document.getElementById('sudoku-normal-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.normal));
-        document.getElementById('sudoku-hard-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.hard));
-        document.getElementById('sudoku-extreme-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.extreme));
-        playAgainBtn.addEventListener('click', () => generatePuzzle(lastDifficulty));
+        const COLS = 10;
+        const ROWS = 20;
+        const BLOCK_SIZE = 30;
 
-        let board = [], solution = [], puzzleStart = [];
-        let selectedCell = {td: null, r: -1, c: -1};
-        let isAutoSolving = false, isGameWon = false;
-        let autoSolveIntervalId = null;
+        context.canvas.width = COLS * BLOCK_SIZE;
+        context.canvas.height = ROWS * BLOCK_SIZE;
+        context.scale(BLOCK_SIZE, BLOCK_SIZE);
+        
+        nextContext.canvas.width = 4 * BLOCK_SIZE;
+        nextContext.canvas.height = 4 * BLOCK_SIZE;
+        nextContext.scale(BLOCK_SIZE, BLOCK_SIZE);
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; }
-            return array;
+        let board, piece, nextPiece, score, gameOver, isPaused, requestId;
+        const time = { start: 0, elapsed: 0, level: 1000 };
+        const SHAPES = [
+            [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], [[1,0,0], [1,1,1], [0,0,0]], [[0,0,1], [1,1,1], [0,0,0]],
+            [[1,1], [1,1]], [[0,1,1], [1,1,0], [0,0,0]], [[0,1,0], [1,1,1], [0,0,0]], [[1,1,0], [0,1,1], [0,0,0]]
+        ];
+
+        function animate(now = 0) {
+            time.elapsed = now - time.start;
+            if (time.elapsed > time.level) {
+                time.start = now;
+                if (!dropPiece()) { endGame(); return; }
+            }
+            draw();
+            requestId = requestAnimationFrame(animate);
         }
         
-        function solveSudokuBacktracking(grid) {
-            for(let r = 0; r < 9; r++) for(let c = 0; c < 9; c++) if(grid[r][c] === 0) {
-                for(let num of shuffle([1,2,3,4,5,6,7,8,9])) {
-                    if(isValid(grid, r, c, num)) { grid[r][c] = num; if(solveSudokuBacktracking(grid)) return true; grid[r][c] = 0; }
-                }
-                return false;
+        function togglePause() {
+            if (gameOver) return;
+            isPaused = !isPaused;
+            if (isPaused) {
+                cancelAnimationFrame(requestId);
+                pauseOverlay.style.display = 'flex';
+                pauseButton.innerText = 'RESUME';
+            } else {
+                time.start = performance.now() - time.elapsed; 
+                animate();
+                pauseOverlay.style.display = 'none';
+                pauseButton.innerText = 'PAUSE';
+            }
+        }
+
+        // --- Controller functions for the main app ---
+        function pauseGame() {
+            if (!isPaused && !gameOver) {
+                togglePause();
+            }
+        }
+        function resumeGame() {
+            if (isPaused && !gameOver) {
+                togglePause();
+            }
+        }
+        tetrisControl.pause = pauseGame;
+        tetrisControl.resume = resumeGame;
+        // ---------------------------------------------
+
+
+        function draw() {
+            context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+            drawBoard();
+            drawPiece(piece, context);
+            drawNextPiece();
+        }
+        
+        function drawBoard() {
+            board.forEach((row, y) => row.forEach((value, x) => {
+                if (value > 0) { context.fillStyle = 'white'; context.fillRect(x, y, 1, 1); }
+            }));
+        }
+
+        function drawPiece(p, ctx) {
+            ctx.fillStyle = 'white';
+            p.shape.forEach((row, y) => row.forEach((value, x) => {
+                if (value > 0) { ctx.fillRect(p.x + x, p.y + y, 1, 1); }
+            }));
+        }
+
+        function drawNextPiece() {
+            nextContext.clearRect(0, 0, nextContext.canvas.width, nextContext.canvas.height);
+            const p = { ...nextPiece };
+            p.x = (4 - p.shape[0].length) / 2;
+            p.y = (4 - p.shape.length) / 2;
+            drawPiece(p, nextContext);
+        }
+
+        function play() {
+            isPaused = false; gameOver = false;
+            board = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+            score = 0; scoreDisplay.innerText = score;
+            gameOverOverlay.style.display = 'none';
+            pauseOverlay.style.display = 'none';
+            pauseButton.innerText = 'PAUSE';
+            nextPiece = createRandomPiece();
+            piece = getNextPiece();
+            time.start = performance.now();
+            if (requestId) cancelAnimationFrame(requestId);
+            animate();
+        }
+        
+        function getNextPiece() {
+            const newPiece = nextPiece;
+            nextPiece = createRandomPiece();
+            newPiece.x = Math.floor(COLS / 2) - Math.floor(newPiece.shape[0].length / 2);
+            newPiece.y = 0;
+            return newPiece;
+        }
+
+        function createRandomPiece() {
+            return { shape: SHAPES[Math.floor(Math.random() * SHAPES.length)], x: 0, y: 0 };
+        }
+        
+        function dropPiece() {
+            let p = { ...piece, y: piece.y + 1 };
+            if (isValidMove(p)) {
+                piece.y++;
+            } else {
+                freezePiece();
+                clearLines();
+                if (gameOver) return false;
+                piece = getNextPiece();
+                if (!isValidMove(piece)) return false;
             }
             return true;
         }
 
-        function generatePuzzle(holesToPoke) {
-            lastDifficulty = holesToPoke;
-            resetSudokuState();
-            board = Array(9).fill(null).map(() => Array(9).fill(0));
-            solveSudokuBacktracking(board);
-            solution = JSON.parse(JSON.stringify(board));
-            let attempts = holesToPoke;
-            while(attempts > 0) {
-                const r = Math.floor(Math.random() * 9), c = Math.floor(Math.random() * 9);
-                if (board[r][c] !== 0) { board[r][c] = 0; attempts--; }
-            }
-            puzzleStart = JSON.parse(JSON.stringify(board)); 
-            renderGrid();
+        function isValidMove(p) {
+            return p.shape.every((row, dy) => {
+                return row.every((value, dx) => {
+                    if (value === 0) return true;
+                    let x = p.x + dx, y = p.y + dy;
+                    return (x >= 0 && x < COLS && y < ROWS && (!board[y] || board[y][x] === 0));
+                });
+            });
         }
-
-        function isValid(grid, r, c, num) {
-            for(let i = 0; i < 9; i++) if(grid[r][i] === num || grid[i][c] === num) return false;
-            const boxRowStart = Math.floor(r/3) * 3, boxColStart = Math.floor(c/3) * 3;
-            for(let i = 0; i < 3; i++) for(let j = 0; j < 3; j++) if(grid[boxRowStart + i][boxColStart + j] === num) return false;
-            return true;
-        }
-
-        function prepareBoardForSolver() {
-            for (let r = 0; r < 9; r++) {
-                for (let c = 0; c < 9; c++) {
-                    if (puzzleStart[r][c] === 0 && board[r][c] !== 0) {
-                        if (board[r][c] !== solution[r][c]) {
-                            board[r][c] = 0; 
-                            sudokuGrid.rows[r].cells[c].textContent = '';
-                        }
+        
+        function freezePiece() {
+            piece.shape.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value > 0) {
+                        let boardY = piece.y + y;
+                        if (boardY < 0) { gameOver = true; } else { board[boardY][piece.x + x] = 1; }
                     }
+                });
+            });
+        }
+
+        function clearLines() {
+            let linesCleared = 0;
+            for (let y = ROWS - 1; y >= 0; y--) {
+                if (board[y].every(value => value > 0)) {
+                    linesCleared++;
+                    board.splice(y, 1);
+                    board.unshift(Array(COLS).fill(0));
+                    y++; 
                 }
             }
-        }
-        
-        function renderGrid() {
-            sudokuGrid.innerHTML = '';
-            for(let r=0; r<9; r++) {
-                const tr = sudokuGrid.insertRow();
-                for(let c=0; c<9; c++) {
-                    const td = tr.insertCell();
-                    td.classList.add('sudoku-cell');
-                    if(board[r][c] !== 0) { 
-                        td.textContent = board[r][c]; 
-                        if(puzzleStart[r][c] !== 0) td.classList.add('puzzle-given');
-                    }
-                    if(!td.classList.contains('puzzle-given')) {
-                        td.addEventListener('click', () => handleCellClick(td, r, c));
-                    }
-                }
+            if (linesCleared > 0) {
+                score += [0, 100, 300, 500, 800][linesCleared];
+                scoreDisplay.innerText = score;
             }
         }
         
-        function handleCellClick(td, r, c) {
-            if(isAutoSolving || isGameWon) return;
-            if(selectedCell.td) selectedCell.td.classList.remove('selected');
-            selectedCell = {td, r, c};
-            td.classList.add('selected');
+        function rotatePiece() {
+            const matrix = piece.shape;
+            const result = matrix[0].map((_, i) => matrix.map(row => row[i]).reverse());
+            let p = { ...piece, shape: result };
+            if (!isValidMove(p)) {
+                p.x += p.x > COLS / 2 ? -1 : 1;
+                if (!isValidMove(p)) return;
+            }
+            piece.shape = p.shape;
+            piece.x = p.x;
         }
         
-        function handleNumberPick(num) {
-            if(!selectedCell.td || isAutoSolving || isGameWon) return;
-            const {r, c} = selectedCell;
-            board[r][c] = num;
-            selectedCell.td.textContent = num === 0 ? '' : num;
-            checkWin();
+        function endGame() {
+            gameOver = true;
+            cancelAnimationFrame(requestId);
+            gameOverOverlay.style.display = 'flex';
         }
 
-        function checkWin() {
-            if (isGameWon) return true;
-            for(let r=0; r<9; r++) for(let c=0; c<9; c++) if (board[r][c] === 0 || board[r][c] !== solution[r][c]) return false;
+        document.addEventListener('keydown', event => {
+            if (!gameWrapper.classList.contains('active')) return;
+             if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+                event.preventDefault();
+            }
+
+            if (event.key.toLowerCase() === 'p') { togglePause(); return; }
+            if (isPaused || gameOver) return;
             
-            isGameWon = true;
-            winMessage.style.display = 'block';
-            solverMessage.textContent = 'You solved it!';
-            updateSudokuSolverButtons();
-            if(selectedCell.td) selectedCell.td.classList.remove('selected');
-            return true;
-        }
+            let p = JSON.parse(JSON.stringify(piece));
+            if (event.key === 'ArrowLeft') p.x--;
+            else if (event.key === 'ArrowRight') p.x++;
+            else if (event.key === 'ArrowDown') { dropPiece(); draw(); return; } 
+            else if (event.key === 'ArrowUp') { rotatePiece(); draw(); return; } 
+            else return;
 
-        function updateSudokuSolverButtons() {
-            document.querySelectorAll('#sudoku-difficulty-selector button').forEach(btn => btn.disabled = isAutoSolving || isGameWon);
-            autoSolveBtn.disabled = isAutoSolving || isGameWon;
-        }
-
-        function resetSudokuState() {
-             if (autoSolveIntervalId) clearInterval(autoSolveIntervalId);
-             isAutoSolving = false; isGameWon = false; autoSolveIntervalId = null;
-             winMessage.style.display = 'none'; solverMessage.textContent = ''; stepCounter.textContent = '';
-             updateSudokuSolverButtons();
-        }
-        
-        autoSolveBtn.addEventListener('click', () => {
-            if (isGameWon) return; 
-            prepareBoardForSolver();
-            isAutoSolving = true; updateSudokuSolverButtons(); solverMessage.textContent = "Auto-solving...";
-            let steps = [];
-            for(let r=0; r<9; r++) for(let c=0; c<9; c++) if(board[r][c] === 0) steps.push({r,c});
-            let i = 0;
-            autoSolveIntervalId = setInterval(() => {
-                if(i >= steps.length) { clearInterval(autoSolveIntervalId); checkWin(); return; }
-                const {r, c} = steps[i];
-                sudokuGrid.rows[r].cells[c].textContent = solution[r][c]; board[r][c] = solution[r][c]; i++;
-                stepCounter.textContent = `Step: ${i} / ${steps.length}`;
-            }, 50);
+            if (isValidMove(p)) { piece = p; draw(); }
         });
 
-        numberPicker.innerHTML = '';
-        for(let i=1; i<=9; i++) {
-            const numDiv = document.createElement('div');
-            numDiv.textContent = i; numDiv.dataset.number = i;
-            numDiv.addEventListener('click', () => handleNumberPick(i));
-            numberPicker.appendChild(numDiv);
-        }
-        const eraseDiv = document.createElement('div');
-        eraseDiv.textContent = 'X'; eraseDiv.classList.add('erase');
-        eraseDiv.addEventListener('click', () => handleNumberPick(0));
-        numberPicker.appendChild(eraseDiv);
-        
-        generatePuzzle(difficultyLevels.normal);
+        pauseButton.addEventListener('click', togglePause);
+        restartButton.addEventListener('click', play);
+        play();
     }
+
     </script>
 </body>
 </html>
