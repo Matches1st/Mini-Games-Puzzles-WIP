@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Universe</title>
+    <style>
+        :root {
+            /* Sudoku Orange Theme */
+            --sudoku-bg-lightest: #FFF3E0; /* Lightest Orange */
+            --sudoku-bg-light: #FFE0B2;    /* Light Orange */
+            --sudoku-border: #FFB74D;      /* Medium Orange */
+            --sudoku-text-dark: #E65100;   /* Dark Orange for text */
+            --sudoku-text-medium: #FB8C00; /* Medium Orange for text/headings */
+            --sudoku-button: #FB8C00;      /* Wisteria Orange */
+            --sudoku-button-hover: #F57C00; /* Darker Wisteria */
+            --sudoku-highlight: #F44336;   /* Red for highlighting */
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F3E5F5; /* Default Lightest Purple */
+            color: #4A148C; /* Default Dark Purple for text */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- Main Game Switching Layout --- */
+        #main-title {
+            color: #6A1B9A; /* Medium Purple */
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            transition: color 0.5s ease;
+        }
+
+        .main-content-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .nav-arrow {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+            border-style: solid;
+            border-width: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        .nav-arrow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .nav-arrow svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .game-view-container {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 900px; /* Adjust as needed */
+        }
+
+        .game-wrapper {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .game-wrapper.active {
+            display: flex;
+        }
+        
+        /* --- Bottom Game Selector --- */
+        .game-selector-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+        
+        .game-selector-icon {
+            width: 100px;
+            height: 100px;
+            border: 3px solid #CE93D8;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: grid;
+            padding: 4px;
+            box-sizing: border-box;
+            background-clip: content-box;
+        }
+        
+        .game-selector-icon.selected {
+            border-radius: 20px;
+            transform: scale(1.1);
+            border-width: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            overflow: hidden; 
+        }
+        
+        #lights-out-icon {
+             grid-template-columns: repeat(5, 1fr);
+             gap: 3px;
+        }
+        .lo-icon-cell { background-color: #E1BEE7;}
+        .lo-icon-cell.on { background-color: #8E44AD; }
+
+        #sudoku-icon {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+        .su-icon-cell {
+            background-color: var(--sudoku-bg-lightest);
+            border: 1px solid #FFD180;
+            color: var(--sudoku-text-dark);
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* --- GENERIC STYLED BUTTON (to be used by both games) --- */
+         .styled-button {
+            padding: 10px 18px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background-color 0.3s ease;
+        }
+        .styled-button:disabled {
+            cursor: not-allowed;
+        }
+
+        /* [START] LIGHTS OUT PUZZLE CSS - UNCHANGED */
+        h1 { display: none; }
+        #lights-out-game .controls-container{display:flex;flex-direction:column;align-items:center;gap:15px;margin-bottom:20px;background-color:#E1BEE7;padding:15px;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,.1);max-width:90%}#lights-out-game .grid-setup-controls,#lights-out-game .image-upload-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}#lights-out-game .grid-setup-controls label,#lights-out-game .image-upload-controls label{font-weight:700}#lights-out-game .grid-setup-controls input[type=number]{width:60px;padding:8px;border:1px solid #CE93D8;border-radius:5px;text-align:center;font-size:1em;background-color:#fff;color:#4A148C;-moz-appearance:textfield}#lights-out-game .grid-setup-controls input[type=number]::-webkit-outer-spin-button,#lights-out-game .grid-setup-controls input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}#lights-out-game .styled-button{background-color:#8E44AD}#lights-out-game .styled-button:hover{background-color:#7B1FA2}#lights-out-game .styled-button:disabled{background-color:#BEA0D0}#lights-out-game .solver-controls{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:5px}#lights-out-game #solver-options{display:flex;gap:10px}#lights-out-game #step-counter{font-weight:700;color:#6A1B9A;font-size:.9em;min-height:1.2em}#lights-out-game #solver-message,#lights-out-game #image-message{font-size:.85em;color:#7B1FA2;min-height:1em;text-align:center}#lights-out-game #game-container{overflow:auto;max-width:95vw;max-height:60vh;margin-bottom:10px}#lights-out-game #game-grid{display:grid;border:2px solid #AB47BC;background-color:#E1BEE7;padding:5px;box-shadow:0 6px 12px rgba(0,0,0,.15);border-radius:5px}#lights-out-game .cell{width:50px;height:50px;background-color:#F3E5F5;border:1px solid #CE93D8;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color .2s ease,outline .2s ease,box-shadow .2s ease;box-sizing:border-box}#lights-out-game .cell.on{background-color:#8E44AD}#lights-out-game .cell:hover:not(.disabled-cell){background-color:#BA68C8}#lights-out-game .cell.on:hover:not(.disabled-cell){background-color:#9C27B0}#lights-out-game .cell.disabled-cell{cursor:not-allowed}#lights-out-game .cell.highlight-auto-click{background-color:#ef9a9a!important;transform:scale(1.1);transition:background-color .05s ease-out,transform .05s ease-out}#lights-out-game .cell.highlight-next-step{outline:3px solid #d32f2f;outline-offset:-3px;box-shadow:0 0 8px #d32f2f}#lights-out-game #win-message{margin-top:15px;padding:15px;background-color:#C8E6C9;color:#2E7D32;border:1px solid #A5D6A7;border-radius:5px;font-size:1.2em;font-weight:700;display:none;box-shadow:0 2px 4px rgba(0,0,0,.1)}#lights-out-game #image-color-choice-dialog,#lights-out-game #image-grid-setup-dialog{margin-top:15px;padding:15px;background-color:#E1BEE7;border:1px solid #AB47BC;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);text-align:center}#lights-out-game #image-color-choice-dialog p,#lights-out-game #image-grid-setup-dialog p{margin-bottom:10px;font-weight:700}#lights-out-game .color-option{display:flex;align-items:center;margin-bottom:8px;justify-content:center}#lights-out-game .color-option input[type=radio]{margin-right:8px}#lights-out-game .color-swatch{width:20px;height:20px;border:1px solid #4A148C;margin-right:8px;display:inline-block}#lights-out-game #processing-canvas{display:none}@media (max-width:600px){#lights-out-game .grid-setup-controls,#lights-out-game .image-upload-controls{flex-direction:column}}
+        
+        /* [START] SUDOKU PUZZLE CSS */
+        #sudoku-game .controls-container {
+            display: flex;
+            flex-direction: column; align-items: center; gap: 15px; margin-bottom: 20px; background-color: var(--sudoku-bg-light);
+            padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 90%; color: var(--sudoku-text-dark);
+        }
+        #sudoku-difficulty-selector { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        #sudoku-difficulty-selector .styled-button { font-size: 0.9em; padding: 8px 12px; }
+
+        #sudoku-game .styled-button { background-color: var(--sudoku-button); }
+        #sudoku-game .styled-button:hover { background-color: var(--sudoku-button-hover); }
+        #sudoku-game .styled-button:disabled { background-color: #FFCC80; }
+        #sudoku-game .solver-controls { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 5px; }
+        #sudoku-game #sudoku-step-counter { font-weight: bold; font-size: 0.9em; min-height: 1.2em; }
+        #sudoku-game #sudoku-solver-message { font-size: 0.85em; min-height: 1.5em; text-align: center; color: var(--sudoku-text-medium); max-width: 400px;}
+
+        #sudoku-grid-container {
+            border: 3px solid var(--sudoku-text-medium);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            border-radius: 5px;
+        }
+        #sudoku-grid { border-collapse: collapse; }
+        .sudoku-cell {
+            width: 45px; height: 45px; background-color: var(--sudoku-bg-lightest); color: var(--sudoku-text-dark);
+            border: 1px solid var(--sudoku-border); font-size: 1.5em; box-sizing: border-box; transition: background-color 0.2s;
+            text-align: center; vertical-align: middle;
+        }
+        #sudoku-grid td:nth-child(3), #sudoku-grid td:nth-child(6) { border-right: 3px solid var(--sudoku-text-medium); }
+        #sudoku-grid tr:nth-child(3) td, #sudoku-grid tr:nth-child(6) td { border-bottom: 3px solid var(--sudoku-text-medium); }
+        .sudoku-cell.puzzle-given { background-color: var(--sudoku-bg-light); font-weight: bold; }
+        .sudoku-cell:not(.puzzle-given) { cursor: pointer; }
+        .sudoku-cell:not(.puzzle-given):hover { background-color: #FFCC80; }
+        .sudoku-cell.selected { background-color: #FFB74D !important; outline: 2px solid var(--sudoku-text-dark); }
+        
+        .sudoku-cell.disabled-cell { cursor: not-allowed !important; background-color: #f2f2f2 !important; }
+        .number-picker { display: flex; gap: 5px; margin-top: 10px; }
+        .number-picker div {
+            width: 35px; height: 35px; background-color: #fff; border: 1px solid var(--sudoku-border); border-radius: 5px;
+            display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.2em;
+            color: var(--sudoku-text-dark); transition: all 0.2s;
+        }
+        .number-picker div:hover { background-color: #FFE0B2; }
+        .number-picker .erase { font-size: 1em; }
+        
+        #sudoku-win-message { 
+             margin-top: 15px; padding: 15px; background-color: #C8E6C9; color: #2E7D32;
+             border: 1px solid #A5D6A7; border-radius: 5px; font-size: 1.2em; font-weight: bold;
+             display: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+             text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sudoku-cell { width: 35px; height: 35px; font-size: 1.2em; }
+            .nav-arrow { width: 50px; height: 50px; }
+        }
+        /* [END] SUDOKU PUZZLE CSS */
+    </style>
+</head>
+<body>
+    <h1 id="main-title">Lights Out!</h1>
+    
+    <div class="main-content-area">
+        <div id="prev-game-arrow" class="nav-arrow">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="white" d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+            </svg>
+        </div>
+
+        <div class="game-view-container">
+            <div id="lights-out-game" class="game-wrapper active">
+                <h1>Lights Out!</h1><div class="controls-container"><div class="grid-setup-controls"><label for="rows-input">Rows:</label><input type="number" id="rows-input" value="5" min="1"><label for="cols-input">Columns:</label><input type="number" id="cols-input" value="5" min="1"><button id="regenerate-button" class="styled-button">Regenerate Puzzle</button></div><div class="image-upload-controls"><input type="file" id="image-file-input" accept="image/*" style="display:none"><button id="upload-image-button" class="styled-button">Upload Image of Puzzle</button></div><div id="image-message"></div><div id="image-color-choice-dialog" style="display:none"><p>Detected Dominant Colors. Which is the 'ON' state (to get rid of)?</p><div id="color-options-container"></div><button id="confirm-image-import-button" class="styled-button" style="margin-top:10px">Confirm and Import Puzzle</button></div><div id="image-grid-setup-dialog" style="display:none"><p>Enter grid dimensions for the puzzle in the image:</p><div class="grid-setup-controls"><label for="image-import-rows">Rows:</label><input type="number" id="image-import-rows" value="5" min="1"><label for="image-import-cols">Columns:</label><input type="number" id="image-import-cols" value="5" min="1"></div><button id="confirm-dimensions-button" class="styled-button" style="margin-top:10px">Import with these Dimensions</button></div><div class="solver-controls"><button id="solve-main-button" class="styled-button">Solve Puzzle</button><div id="solver-options" style="display:none"><button id="show-steps-button" class="styled-button">Show Steps</button><button id="auto-solve-button" class="styled-button">Auto Solve</button></div><span id="step-counter"></span><span id="solver-message"></span></div></div><canvas id="processing-canvas"></canvas><div id="game-container"><div id="game-grid"></div></div><div id="win-message">Congratulations! You solved the puzzle!</div>
+            </div>
+
+            <div id="sudoku-game" class="game-wrapper">
+                <div class="controls-container">
+                    <div id="sudoku-difficulty-selector">
+                        <button id="sudoku-easy-btn" class="styled-button">Easy</button>
+                        <button id="sudoku-normal-btn" class="styled-button">Normal</button>
+                        <button id="sudoku-hard-btn" class="styled-button">Hard</button>
+                        <button id="sudoku-extreme-btn" class="styled-button">Extreme</button>
+                    </div>
+                     <div class="solver-controls">
+                        <button id="sudoku-auto-solve-button" class="styled-button">Auto Solve Puzzle</button>
+                        <span id="sudoku-step-counter"></span>
+                        <span id="sudoku-solver-message"></span>
+                    </div>
+                </div>
+                <div id="sudoku-grid-container"><table id="sudoku-grid"></table></div>
+                <div class="number-picker" id="sudoku-number-picker"></div>
+                <div id="sudoku-win-message">
+                    Congratulations! You solved the Sudoku!
+                    <button id="sudoku-play-again-btn" class="styled-button" style="margin-top: 10px;">Play Again</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="next-game-arrow" class="nav-arrow">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="white" d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div class="game-selector-container"></div>
+
+    <script>
+    // --- MULTI-GAME MANAGEMENT LOGIC (No changes, omitted for brevity)
+    document.addEventListener('DOMContentLoaded', () => {
+        const games=[{id:'lights-out',name:'Lights Out!',theme:{bodyBG:'#F3E5F5',titleColor:'#6A1B9A',arrowFill:'#E1BEE7',arrowBorder:'#AB47BC',selectorBorder:'#CE93D8'},init:initLightsOut,createIcon:createLightsOutIcon},{id:'sudoku',name:'Sudoku',theme:{bodyBG:'var(--sudoku-bg-lightest)',titleColor:'var(--sudoku-text-medium)',arrowFill:'var(--sudoku-bg-light)',arrowBorder:'var(--sudoku-text-medium)',selectorBorder:'var(--sudoku-border)'},init:initSudoku,createIcon:createSudokuIcon}];
+        let currentGameIndex=0;const mainTitle=document.getElementById('main-title');const prevArrow=document.getElementById('prev-game-arrow');const nextArrow=document.getElementById('next-game-arrow');const gameWrappers=document.querySelectorAll('.game-wrapper');const selectorContainer=document.querySelector('.game-selector-container');function createLightsOutIcon(){const icon=document.createElement('div');icon.id='lights-out-icon';const pattern=[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1];pattern.forEach(p=>{const cell=document.createElement('div');cell.className='lo-icon-cell'+(p?' on':'');icon.appendChild(cell);});return icon;}
+        function createSudokuIcon(){const icon=document.createElement('div');icon.id='sudoku-icon';const pattern=['5','3','','6','','','','9','8'];pattern.forEach(p=>{const cell=document.createElement('div');cell.className='su-icon-cell';cell.textContent=p;icon.appendChild(cell);});return icon;}
+        function updateGameSelection(){const theme=games[currentGameIndex].theme;gameWrappers.forEach((wrapper,index)=>{wrapper.classList.toggle('active',index===currentGameIndex);});const icons=selectorContainer.querySelectorAll('.game-selector-icon');icons.forEach((icon,index)=>{icon.classList.toggle('selected',index===currentGameIndex);icon.style.borderColor=games[index].theme.selectorBorder;});document.body.style.backgroundColor=theme.bodyBG;mainTitle.style.color=theme.titleColor;mainTitle.textContent=games[currentGameIndex].name;prevArrow.style.backgroundColor=theme.arrowFill;prevArrow.style.borderColor=theme.arrowBorder;nextArrow.style.backgroundColor=theme.arrowFill;nextArrow.style.borderColor=theme.arrowBorder;}
+        function switchGame(direction){currentGameIndex+=direction;if(currentGameIndex>=games.length){currentGameIndex=0;}else if(currentGameIndex<0){currentGameIndex=games.length-1;}updateGameSelection();}
+        prevArrow.addEventListener('click',()=>switchGame(-1));nextArrow.addEventListener('click',()=>switchGame(1));games.forEach((game,index)=>{const iconContainer=game.createIcon();iconContainer.classList.add('game-selector-icon');iconContainer.dataset.index=index;iconContainer.addEventListener('click',()=>{if(currentGameIndex!==index){currentGameIndex=index;updateGameSelection();}});selectorContainer.appendChild(iconContainer);if(typeof game.init==='function'){game.init();}});updateGameSelection();
+    });
+
+    // --- LIGHTS OUT GAME LOGIC (Unchanged, omitted for brevity)
+    function initLightsOut() {
+        const gameContainer=document.getElementById('game-container');const gameGrid=document.getElementById('game-grid');const rowsInput=document.getElementById('rows-input');const colsInput=document.getElementById('cols-input');const regenerateButton=document.getElementById('regenerate-button');const winMessage=document.getElementById('win-message');const solveMainButton=document.getElementById('solve-main-button');const solverOptionsDiv=document.getElementById('solver-options');const showStepsButton=document.getElementById('show-steps-button');const autoSolveButton=document.getElementById('auto-solve-button');const stepCounterDisplay=document.getElementById('step-counter');const solverMessageDisplay=document.getElementById('solver-message');let numRows=5;let numCols=5;let gridState=[];const MAX_SOLVER_DIM=100;let solutionPresses=[];let currentSolutionStepIndex=0;let totalSolutionSteps=0;let isAutoSolving=false;let isShowingStepsMode=false;let autoSolveIntervalId=null;function posToIdx(r,c,cols){return r*cols+c;}function idxToPos(idx,cols){return{r:Math.floor(idx/cols),c:idx%cols};}const BASE_COLORS_PALETTE_DEF={RED:{base:[255,0,0],name:"Red"},ORANGE:{base:[255,165,0],name:"Orange"},YELLOW:{base:[255,255,0],name:"Yellow"},GREEN:{base:[0,128,0],name:"Green"},BLUE:{base:[0,0,255],name:"Blue"},PURPLE:{base:[128,0,128],name:"Purple"},PINK:{base:[255,192,203],name:"Pink"},GRAY:{base:[128,128,128],name:"Gray"}};function generateShadesForPalette(colorName,baseRgb){const shades=[];const[r,g,b]=baseRgb;shades.push({name:`Light Light ${colorName}`,rgb:[Math.min(255,Math.round((Math.min(255,Math.round((r+255)/2))+255)/2)),Math.min(255,Math.round((Math.min(255,Math.round((g+255)/2))+255)/2)),Math.min(255,Math.round((Math.min(255,Math.round((b+255)/2))+255)/2))]});shades.push({name:`Light ${colorName}`,rgb:[Math.min(255,Math.round((r+255)/2)),Math.min(255,Math.round((g+255)/2)),Math.min(255,Math.round((b+255)/2))]});shades.push({name:colorName,rgb:[r,g,b]});shades.push({name:`Dark ${colorName}`,rgb:[Math.max(0,Math.round(r*0.5)),Math.max(0,Math.round(g*0.5)),Math.max(0,Math.round(b*0.5))]});shades.push({name:`Dark Dark ${colorName}`,rgb:[Math.max(0,Math.round(Math.max(0,Math.round(r*0.5))*0.7)),Math.max(0,Math.round(Math.max(0,Math.round(g*0.5))*0.7)),Math.max(0,Math.round(Math.max(0,Math.round(b*0.5))*0.7))]});return shades.filter((s,i,self)=>i===self.findIndex(t=>t.rgb.every((val,idx)=>val===s.rgb[idx]))); }
+        const PREDEFINED_PALETTE=[{name:"White",rgb:[255,255,255]},{name:"Black",rgb:[0,0,0]}];for(const key in BASE_COLORS_PALETTE_DEF){PREDEFINED_PALETTE.push(...generateShadesForPalette(BASE_COLORS_PALETTE_DEF[key].name,BASE_COLORS_PALETTE_DEF[key].base));}
+        function rgbToHex(r,g,b){return "#"+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1).toUpperCase();}
+        function colorDistanceSquared(rgb1,rgb2){return Math.pow(rgb1[0]-rgb2[0],2)+Math.pow(rgb1[1]-rgb2[1],2)+Math.pow(rgb1[2]-rgb2[2],2);}
+        function findNearestPaletteColor(rgb){let minDistance=Infinity;let nearestColor=PREDEFINED_PALETTE[0];for(const paletteColor of PREDEFINED_PALETTE){const distance=colorDistanceSquared(rgb,paletteColor.rgb);if(distance<minDistance){minDistance=distance;nearestColor=paletteColor;}}return nearestColor;}
+        const imageFileInput=document.getElementById('image-file-input');const uploadImageButton=document.getElementById('upload-image-button');const imageMessage=document.getElementById('image-message');const colorChoiceDialog=document.getElementById('image-color-choice-dialog');const colorOptionsContainer=document.getElementById('color-options-container');const confirmImageImportButton=document.getElementById('confirm-image-import-button');const processingCanvas=document.getElementById('processing-canvas');const processingCtx=processingCanvas.getContext('2d',{willReadFrequently:true});const imageGridSetupDialog=document.getElementById('image-grid-setup-dialog');const imageImportRowsInput=document.getElementById('image-import-rows');const imageImportColsInput=document.getElementById('image-import-cols');const confirmDimensionsButton=document.getElementById('confirm-dimensions-button');let detectedDominantColorsRGB=[];let loadedImageData=null;let imageImportOnStateRGB=null;let imageImportOffStateRGB=null;let imageImportPuzzleBounds=null;uploadImageButton.addEventListener('click',()=>{imageFileInput.click();resetSolverState();imageMessage.textContent='';colorChoiceDialog.style.display='none';imageGridSetupDialog.style.display='none';imageImportOnStateRGB=null;imageImportOffStateRGB=null;imageImportPuzzleBounds=null;});imageFileInput.addEventListener('change',(event)=>{const file=event.target.files[0];if(!file)return;imageMessage.textContent='';colorChoiceDialog.style.display='none';imageGridSetupDialog.style.display='none';imageImportOnStateRGB=null;imageImportOffStateRGB=null;imageImportPuzzleBounds=null;const reader=new FileReader();reader.onload=(e)=>{const img=new Image();img.onload=()=>{imageMessage.textContent='Processing image...';const MAX_PROC_WIDTH=400,MAX_PROC_HEIGHT=400;let width=img.width,height=img.height;if(width>height){if(width>MAX_PROC_WIDTH){height*=MAX_PROC_WIDTH/width;width=MAX_PROC_WIDTH;}}else{if(height>MAX_PROC_HEIGHT){width*=MAX_PROC_HEIGHT/height;height=MAX_PROC_HEIGHT;}}processingCanvas.width=width;processingCanvas.height=height;processingCtx.drawImage(img,0,0,width,height);loadedImageData=processingCtx.getImageData(0,0,width,height);processImageForColorsAndGrid();}
+        img.onerror=()=>{imageMessage.textContent='Error loading image.';}
+        img.src=e.target.result;}
+        reader.readAsDataURL(file);event.target.value=null;});function getPixelRGB(imageData,x,y){const i=(Math.floor(y)*imageData.width+Math.floor(x))*4;return[imageData.data[i],imageData.data[i+1],imageData.data[i+2]];}
+        function processImageForColorsAndGrid(){imageGridSetupDialog.style.display='none';const samples=[];const numSamples=1000;for(let i=0;i<numSamples;i++){const x=Math.floor(Math.random()*loadedImageData.width);const y=Math.floor(Math.random()*loadedImageData.height);samples.push(getPixelRGB(loadedImageData,x,y));}let centroids=[samples[0],samples[Math.floor(samples.length/2)]];if(colorDistanceSquared(centroids[0],centroids[1])<100)centroids[1]=samples[samples.length-1];for(let iter=0;iter<10;iter++){const clusters=[[],[]];samples.forEach(sample=>{colorDistanceSquared(sample,centroids[0])<colorDistanceSquared(sample,centroids[1])?clusters[0].push(sample):clusters[1].push(sample);});const newCentroids=clusters.map(cluster=>{if(cluster.length===0)return centroids[clusters.indexOf(cluster)];const sumRgb=cluster.reduce((acc,rgb)=>[acc[0]+rgb[0],acc[1]+rgb[1],acc[2]+rgb[2]],[0,0,0]);return[Math.round(sumRgb[0]/cluster.length),Math.round(sumRgb[1]/cluster.length),Math.round(sumRgb[2]/cluster.length)];});if(colorDistanceSquared(newCentroids[0],centroids[0])<1&&colorDistanceSquared(newCentroids[1],centroids[1])<1)break;centroids=newCentroids;}detectedDominantColorsRGB=centroids.map(c=>c.map(Math.round));colorOptionsContainer.innerHTML='';if(detectedDominantColorsRGB.length<2||colorDistanceSquared(detectedDominantColorsRGB[0],detectedDominantColorsRGB[1])<400){imageMessage.textContent='Could not reliably detect two distinct dominant colors.';colorChoiceDialog.style.display='none';return;}detectedDominantColorsRGB.forEach((rgb,index)=>{const paletteMatch=findNearestPaletteColor(rgb);const optionDiv=document.createElement('div');optionDiv.classList.add('color-option');const radio=document.createElement('input');radio.type='radio';radio.name='onStateColor';radio.value=index;if(index===0)radio.checked=true;const swatch=document.createElement('span');swatch.classList.add('color-swatch');swatch.style.backgroundColor=`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;const label=document.createElement('label');label.htmlFor=radio.id=`colorOption${index}`;label.textContent=` ${paletteMatch.name} (Detected: ${rgbToHex(rgb[0],rgb[1],rgb[2])})`;optionDiv.appendChild(radio);optionDiv.appendChild(swatch);optionDiv.appendChild(label);colorOptionsContainer.appendChild(optionDiv);});imageMessage.textContent='Image colors processed.';colorChoiceDialog.style.display='block';}
+        confirmImageImportButton.addEventListener('click',()=>{const selectedColorIndex=document.querySelector('input[name="onStateColor"]:checked')?.value;if(selectedColorIndex===undefined){imageMessage.textContent='Please select which color is the "ON" state.';return;}const onStateRGB=detectedDominantColorsRGB[parseInt(selectedColorIndex)];const offStateRGB=detectedDominantColorsRGB[parseInt(selectedColorIndex)===0?1:0];imageImportOnStateRGB=onStateRGB;imageImportOffStateRGB=offStateRGB;imageMessage.textContent='Analyzing puzzle area in image...';colorChoiceDialog.style.display='none';const{width,height,data}=loadedImageData;let minX=width,maxX=0,minY=height,maxY=0;let activePixelCount=0;const colorThreshold=10000;for(let y_coord=0;y_coord<height;y_coord++){for(let x_coord=0;x_coord<width;x_coord++){const idx=(y_coord*width+x_coord)*4;const r_px=data[idx],g_px=data[idx+1],b_px=data[idx+2];if(colorDistanceSquared([r_px,g_px,b_px],imageImportOnStateRGB)<colorThreshold||colorDistanceSquared([r_px,g_px,b_px],imageImportOffStateRGB)<colorThreshold){minX=Math.min(minX,x_coord);maxX=Math.max(maxX,x_coord);minY=Math.min(minY,y_coord);maxY=Math.max(maxY,y_coord);activePixelCount++;}}}if(activePixelCount<100||maxX-minX<20||maxY-minY<20){imageMessage.textContent='Could not find a clear puzzle area in the image. Try a different image or check color selection.';imageImportOnStateRGB=null;imageImportOffStateRGB=null;return;}imageImportPuzzleBounds={minX,maxX,minY,maxY};imageImportRowsInput.value=rowsInput.value;imageImportColsInput.value=colsInput.value;imageGridSetupDialog.style.display='block';imageMessage.textContent='Puzzle area found. Please enter the grid dimensions.';});confirmDimensionsButton.addEventListener('click',()=>{const newRows=parseInt(imageImportRowsInput.value);const newCols=parseInt(imageImportColsInput.value);if(isNaN(newRows)||newRows<1||newRows>150||isNaN(newCols)||newCols<1||newCols>150){imageMessage.textContent="Please enter valid positive numbers (1-150) for rows and columns.";return;}numRows=newRows;numCols=newCols;rowsInput.value=numRows;colsInput.value=numCols;imageMessage.textContent=`Importing ${numRows}x${numCols} puzzle...`;imageGridSetupDialog.style.display='none';createGridDOM();gridState=Array(numRows).fill(null).map(()=>Array(numCols).fill(false));const{minX,maxX,minY,maxY}=imageImportPuzzleBounds;const{width:canvasWidth,height:canvasHeight,data}=loadedImageData;const puzzleActualWidth=maxX-minX;const puzzleActualHeight=maxY-minY;const cellImgWidth=puzzleActualWidth/numCols;const cellImgHeight=puzzleActualHeight/numRows;for(let r=0;r<numRows;r++){for(let c=0;c<numCols;c++){const centerX=Math.floor(minX+(c+0.5)*cellImgWidth);const centerY=Math.floor(minY+(r+0.5)*cellImgHeight);let R_sum=0,G_sum=0,B_sum=0,sample_count=0;for(let dy=-1;dy<=1;dy++){for(let dx=-1;dx<=1;dx++){const sx=centerX+dx;const sy=centerY+dy;if(sx>=0&&sx<canvasWidth&&sy>=0&&sy<canvasHeight){const s_idx=(sy*canvasWidth+sx)*4;R_sum+=data[s_idx];G_sum+=data[s_idx+1];B_sum+=data[s_idx+2];sample_count++;}}}if(sample_count===0){gridState[r][c]=false;continue;}const avgCellColor=[R_sum/sample_count,G_sum/sample_count,B_sum/sample_count];gridState[r][c]=colorDistanceSquared(avgCellColor,imageImportOnStateRGB)<colorDistanceSquared(avgCellColor,imageImportOffStateRGB);}}updateGridVisuals();winMessage.style.display='none';resetSolverState();imageMessage.textContent=`Successfully imported ${numRows}x${numCols} puzzle from image.`;imageImportOnStateRGB=null;imageImportOffStateRGB=null;imageImportPuzzleBounds=null;});function createGridDOM(){gameGrid.innerHTML='';gameGrid.style.gridTemplateColumns=`repeat(${numCols}, 1fr)`;gameGrid.style.gridTemplateRows=`repeat(${numRows}, 1fr)`;let baseCellSize=50;if(numRows>10||numCols>10)baseCellSize=35;if(numRows>15||numCols>15)baseCellSize=25;if(numRows>20||numCols>20)baseCellSize=20;if(numRows>30||numCols>30)baseCellSize=15;if(numRows>50||numCols>50)baseCellSize=10;const minPixelSize=3;for(let r=0;r<numRows;r++){for(let c=0;c<numCols;c++){const cell=document.createElement('div');cell.classList.add('cell');cell.dataset.row=r;cell.dataset.col=c;cell.style.width=`${baseCellSize}px`;cell.style.height=`${baseCellSize}px`;cell.style.minWidth=`${minPixelSize}px`;cell.style.minHeight=`${minPixelSize}px`;cell.addEventListener('click',handleCellClick);gameGrid.appendChild(cell);}}updateSolverButtonState();}
+        function initializeGridState(){gridState=Array(numRows).fill(null).map(()=>Array(numCols).fill(false));}
+        function toggleCellAndNeighbors(r,c){const M_NEIGHBORS=[[0,0],[-1,0],[1,0],[0,-1],[0,1]];M_NEIGHBORS.forEach(([dr,dc])=>{const nr=r+dr;const nc=c+dc;if(nr>=0&&nr<numRows&&nc>=0&&nc<numCols)gridState[nr][nc]=!gridState[nr][nc];});}
+        function randomizePuzzle(){initializeGridState();const presses=numRows*numCols+Math.floor(Math.random()*(numRows*numCols/2));for(let i=0;i<presses;i++)toggleCellAndNeighbors(Math.floor(Math.random()*numRows),Math.floor(Math.random()*numCols));updateGridVisuals();winMessage.style.display='none';resetSolverState();imageMessage.textContent='';colorChoiceDialog.style.display='none';imageGridSetupDialog.style.display='none';loadedImageData=null;detectedDominantColorsRGB=[];imageImportOnStateRGB=null;imageImportOffStateRGB=null;imageImportPuzzleBounds=null;}
+        function updateGridVisuals(){for(let r=0;r<numRows;r++){for(let c=0;c<numCols;c++){const cellElement=gameGrid.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);if(cellElement){cellElement.classList.toggle('on',gridState[r][c]);if(!isShowingStepsMode||(solutionPresses[currentSolutionStepIndex]?.r!==r||solutionPresses[currentSolutionStepIndex]?.c!==c))cellElement.classList.remove('highlight-next-step');if(isShowingStepsMode&&solutionPresses.length>0&&currentSolutionStepIndex<totalSolutionSteps){const nextStepCell=gameGrid.querySelector(`.cell[data-row='${solutionPresses[currentSolutionStepIndex].r}'][data-col='${solutionPresses[currentSolutionStepIndex].c}']`);if(nextStepCell)nextStepCell.classList.add('highlight-next-step');}}}}}
+        function handleCellClick(event){if(isAutoSolving||checkWin())return;const row=parseInt(event.target.dataset.row);const col=parseInt(event.target.dataset.col);toggleCellAndNeighbors(row,col);updateGridVisuals();if(isShowingStepsMode){const expectedStep=solutionPresses[currentSolutionStepIndex];if(expectedStep&&expectedStep.r===row&&expectedStep.c===col){currentSolutionStepIndex++;updateStepCounter();event.target.classList.remove('highlight-next-step');if(currentSolutionStepIndex<totalSolutionSteps)highlightNextStep();}else if(totalSolutionSteps>0)highlightNextStep();}if(checkWin()){winMessage.style.display='block';solverMessageDisplay.textContent="Puzzle Solved!";if(isAutoSolving||isShowingStepsMode)resetSolverState();}}
+        function checkWin(){for(let r=0;r<numRows;r++)for(let c=0;c<numCols;c++)if(gridState[r][c])return false;return true;}
+        function regenerate(){const newRows=parseInt(rowsInput.value);const newCols=parseInt(colsInput.value);if(isNaN(newRows)||newRows<1||isNaN(newCols)||newCols<1){alert("Please enter valid positive numbers for rows and columns.");rowsInput.value=numRows;colsInput.value=numCols;return;}numRows=newRows;numCols=newCols;createGridDOM();randomizePuzzle();}
+        function updateSolverButtonState(){const isTooLargeForSolver=numRows>MAX_SOLVER_DIM||numCols>MAX_SOLVER_DIM||(numRows*numCols>MAX_SOLVER_DIM*MAX_SOLVER_DIM);solveMainButton.disabled=isTooLargeForSolver||isAutoSolving||isShowingStepsMode;if(isTooLargeForSolver){solverMessageDisplay.textContent=`Solver disabled: Grid > ${MAX_SOLVER_DIM}x${MAX_SOLVER_DIM} (or too many total cells) is too large.`;solverOptionsDiv.style.display='none';stepCounterDisplay.textContent='';}else if(!isAutoSolving&&!isShowingStepsMode)solverMessageDisplay.textContent='';regenerateButton.disabled=isAutoSolving;uploadImageButton.disabled=isAutoSolving;showStepsButton.disabled=isAutoSolving;autoSolveButton.disabled=isAutoSolving||isShowingStepsMode;rowsInput.disabled=isAutoSolving;colsInput.disabled=isAutoSolving;}
+        function resetSolverState(){if(autoSolveIntervalId)clearInterval(autoSolveIntervalId);autoSolveIntervalId=null;isAutoSolving=false;isShowingStepsMode=false;solutionPresses=[];currentSolutionStepIndex=0;totalSolutionSteps=0;solverOptionsDiv.style.display='none';solveMainButton.style.display='inline-block';stepCounterDisplay.textContent='';document.querySelectorAll('#lights-out-game .cell.highlight-next-step').forEach(c=>c.classList.remove('highlight-next-step'));document.querySelectorAll('#lights-out-game .cell.highlight-auto-click').forEach(c=>c.classList.remove('highlight-auto-click'));document.querySelectorAll('#lights-out-game .cell').forEach(c=>c.classList.remove('disabled-cell'));updateSolverButtonState();}
+        solveMainButton.addEventListener('click',()=>{if(checkWin()){solverMessageDisplay.textContent="Puzzle is already solved!";return;}solverMessageDisplay.textContent="Calculating solution... (This may freeze your browser for very large grids!)";solveMainButton.disabled=true;showStepsButton.disabled=true;autoSolveButton.disabled=true;regenerateButton.disabled=true;uploadImageButton.disabled=true;rowsInput.disabled=true;colsInput.disabled=true;setTimeout(()=>{try{solutionPresses=calculateSolutionPresses();if(solutionPresses===null){solverMessageDisplay.textContent="Error: This puzzle configuration is unsolvable.";resetSolverState();return;}totalSolutionSteps=solutionPresses.length;currentSolutionStepIndex=0;solverMessageDisplay.textContent=totalSolutionSteps>0?"Solution calculated.":"No presses needed; puzzle already solved or configuration error.";solveMainButton.style.display='none';solverOptionsDiv.style.display='flex';updateStepCounter();}catch(e){solverMessageDisplay.textContent="Solver Error (grid likely too large).";console.error("Solver calculation error:",e);}finally{if(!isAutoSolving){regenerateButton.disabled=false;uploadImageButton.disabled=false;rowsInput.disabled=false;colsInput.disabled=false;}updateSolverButtonState();}},100);});autoSolveButton.addEventListener('click',()=>{if(totalSolutionSteps===0&&!checkWin()){solverMessageDisplay.textContent="No solution steps available or puzzle unsolvable.";checkWin();return;}if(checkWin()&&totalSolutionSteps===0){solverMessageDisplay.textContent="Puzzle is already solved!";return;}isAutoSolving=true;updateSolverButtonState();solverMessageDisplay.textContent="Auto-solving...";document.querySelectorAll('#lights-out-game .cell').forEach(c=>c.classList.add('disabled-cell'));let delayPerStep=200;if(totalSolutionSteps>0){delayPerStep=Math.max(50,Math.min(500,15000/totalSolutionSteps));}function performNextAutoStep(){if(currentSolutionStepIndex>=totalSolutionSteps||!isAutoSolving||checkWin()){clearInterval(autoSolveIntervalId);autoSolveIntervalId=null;isAutoSolving=false;document.querySelectorAll('#lights-out-game .cell').forEach(c=>c.classList.remove('disabled-cell'));if(checkWin()){solverMessageDisplay.textContent="Auto-solve complete! Puzzle solved.";winMessage.style.display='block';}else if(currentSolutionStepIndex>=totalSolutionSteps){solverMessageDisplay.textContent="Auto-solve finished all steps, but puzzle not solved. (Solver/puzzle mismatch?)";}else{solverMessageDisplay.textContent="Auto-solve stopped.";}resetSolverState();return;}const press=solutionPresses[currentSolutionStepIndex];const cellToClick=gameGrid.querySelector(`.cell[data-row='${press.r}'][data-col='${press.c}']`);if(cellToClick){cellToClick.classList.add('highlight-auto-click');const highlightDuration=Math.max(20,Math.min(100,delayPerStep*0.25));setTimeout(()=>{toggleCellAndNeighbors(press.r,press.c);updateGridVisuals();currentSolutionStepIndex++;updateStepCounter();cellToClick.classList.remove('highlight-auto-click');},highlightDuration);}else{currentSolutionStepIndex++;}}if(totalSolutionSteps>0){autoSolveIntervalId=setInterval(performNextAutoStep,delayPerStep);performNextAutoStep();}else{isAutoSolving=false;solverMessageDisplay.textContent="No steps to auto-solve.";resetSolverState();if(checkWin())winMessage.style.display='block';}});showStepsButton.addEventListener('click',()=>{if(totalSolutionSteps===0&&!checkWin()){solverMessageDisplay.textContent="No solution steps to show or puzzle unsolvable.";checkWin();return;}if(checkWin()&&totalSolutionSteps===0){solverMessageDisplay.textContent="Puzzle is already solved!";return;}isShowingStepsMode=true;solverMessageDisplay.textContent="Follow the highlighted steps. Click the highlighted cell.";updateSolverButtonState();highlightNextStep();});function updateStepCounter(){if((isAutoSolving||isShowingStepsMode)&&totalSolutionSteps>0)stepCounterDisplay.textContent=`Step: ${currentSolutionStepIndex} / ${totalSolutionSteps}`;else stepCounterDisplay.textContent='';}
+        function highlightNextStep(){document.querySelectorAll('#lights-out-game .cell.highlight-next-step').forEach(c=>c.classList.remove('highlight-next-step'));if(isShowingStepsMode&&currentSolutionStepIndex<totalSolutionSteps){const nextStep=solutionPresses[currentSolutionStepIndex];const cellToHighlight=gameGrid.querySelector(`.cell[data-row='${nextStep.r}'][data-col='${nextStep.c}']`);if(cellToHighlight)cellToHighlight.classList.add('highlight-next-step');}}
+        function calculateSolutionPresses(){const N_VARS=numRows*numCols;if(N_VARS===0)return[];const augMatrix=Array(N_VARS).fill(null).map(()=>Array(N_VARS+1).fill(0));for(let i=0;i<N_VARS;i++){const{r:lr,c:lc}=idxToPos(i,numCols);augMatrix[i][N_VARS]=gridState[lr][lc]?1:0;for(let j=0;j<N_VARS;j++){const{r:pr,c:pc}=idxToPos(j,numCols);if(Math.abs(lr-pr)+Math.abs(lc-pc)<=1&&(lr===pr||lc===pc)){augMatrix[i][j]=1;}else if(lr===pr&&lc===pc){augMatrix[i][j]=1;}}}let pivotRow=0;for(let col=0;col<N_VARS&&pivotRow<N_VARS;col++){let i=pivotRow;while(i<N_VARS&&augMatrix[i][col]===0)i++;if(i<N_VARS){[augMatrix[i],augMatrix[pivotRow]]=[augMatrix[pivotRow],augMatrix[i]];for(let k=0;k<N_VARS;k++){if(k!==pivotRow&&augMatrix[k][col]===1){for(let l=col;l<=N_VARS;l++)augMatrix[k][l]^=augMatrix[pivotRow][l];}}pivotRow++;}}const solution=Array(N_VARS).fill(0);for(let i=pivotRow;i<N_VARS;i++){if(augMatrix[i][N_VARS]===1)return null;}for(let i=pivotRow-1;i>=0;i--){let pivotCol=-1;for(let j=0;j<N_VARS;j++)if(augMatrix[i][j]===1){pivotCol=j;break;}if(pivotCol!==-1){let val=augMatrix[i][N_VARS];for(let j=pivotCol+1;j<N_VARS;j++)if(augMatrix[i][j]===1)val^=solution[j];solution[pivotCol]=val;}}const pressesToMake=[];for(let i=0;i<N_VARS;i++)if(solution[i]===1)pressesToMake.push(idxToPos(i,numCols));return pressesToMake;}
+        regenerateButton.addEventListener('click',regenerate);createGridDOM();randomizePuzzle();
+    }
+
+    // --- SUDOKU GAME LOGIC ---
+    function initSudoku() {
+        const sudokuGrid = document.getElementById('sudoku-grid');
+        const numberPicker = document.getElementById('sudoku-number-picker');
+        const winMessage = document.getElementById('sudoku-win-message');
+        const playAgainBtn = document.getElementById('sudoku-play-again-btn');
+        const autoSolveBtn = document.getElementById('sudoku-auto-solve-button');
+        const stepCounter = document.getElementById('sudoku-step-counter');
+        const solverMessage = document.getElementById('sudoku-solver-message');
+        
+        const difficultyLevels = { easy: 40, normal: 48, hard: 54, extreme: 60 };
+        let lastDifficulty = difficultyLevels.normal;
+        document.getElementById('sudoku-easy-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.easy));
+        document.getElementById('sudoku-normal-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.normal));
+        document.getElementById('sudoku-hard-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.hard));
+        document.getElementById('sudoku-extreme-btn').addEventListener('click', () => generatePuzzle(difficultyLevels.extreme));
+        playAgainBtn.addEventListener('click', () => generatePuzzle(lastDifficulty));
+
+        let board = [], solution = [], puzzleStart = [];
+        let selectedCell = {td: null, r: -1, c: -1};
+        let isAutoSolving = false, isGameWon = false;
+        let autoSolveIntervalId = null;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; }
+            return array;
+        }
+        
+        function solveSudokuBacktracking(grid) {
+            for(let r = 0; r < 9; r++) for(let c = 0; c < 9; c++) if(grid[r][c] === 0) {
+                for(let num of shuffle([1,2,3,4,5,6,7,8,9])) {
+                    if(isValid(grid, r, c, num)) { grid[r][c] = num; if(solveSudokuBacktracking(grid)) return true; grid[r][c] = 0; }
+                }
+                return false;
+            }
+            return true;
+        }
+
+        function generatePuzzle(holesToPoke) {
+            lastDifficulty = holesToPoke;
+            resetSudokuState();
+            board = Array(9).fill(null).map(() => Array(9).fill(0));
+            solveSudokuBacktracking(board);
+            solution = JSON.parse(JSON.stringify(board));
+            let attempts = holesToPoke;
+            while(attempts > 0) {
+                const r = Math.floor(Math.random() * 9), c = Math.floor(Math.random() * 9);
+                if (board[r][c] !== 0) { board[r][c] = 0; attempts--; }
+            }
+            puzzleStart = JSON.parse(JSON.stringify(board)); 
+            renderGrid();
+        }
+
+        function isValid(grid, r, c, num) {
+            for(let i = 0; i < 9; i++) if(grid[r][i] === num || grid[i][c] === num) return false;
+            const boxRowStart = Math.floor(r/3) * 3, boxColStart = Math.floor(c/3) * 3;
+            for(let i = 0; i < 3; i++) for(let j = 0; j < 3; j++) if(grid[boxRowStart + i][boxColStart + j] === num) return false;
+            return true;
+        }
+
+        function prepareBoardForSolver() {
+            for (let r = 0; r < 9; r++) {
+                for (let c = 0; c < 9; c++) {
+                    if (puzzleStart[r][c] === 0 && board[r][c] !== 0) {
+                        if (board[r][c] !== solution[r][c]) {
+                            board[r][c] = 0; 
+                            sudokuGrid.rows[r].cells[c].textContent = '';
+                        }
+                    }
+                }
+            }
+        }
+        
+        function renderGrid() {
+            sudokuGrid.innerHTML = '';
+            for(let r=0; r<9; r++) {
+                const tr = sudokuGrid.insertRow();
+                for(let c=0; c<9; c++) {
+                    const td = tr.insertCell();
+                    td.classList.add('sudoku-cell');
+                    if(board[r][c] !== 0) { 
+                        td.textContent = board[r][c]; 
+                        if(puzzleStart[r][c] !== 0) td.classList.add('puzzle-given');
+                    }
+                    if(!td.classList.contains('puzzle-given')) {
+                        td.addEventListener('click', () => handleCellClick(td, r, c));
+                    }
+                }
+            }
+        }
+        
+        function handleCellClick(td, r, c) {
+            if(isAutoSolving || isGameWon) return;
+            if(selectedCell.td) selectedCell.td.classList.remove('selected');
+            selectedCell = {td, r, c};
+            td.classList.add('selected');
+        }
+        
+        function handleNumberPick(num) {
+            if(!selectedCell.td || isAutoSolving || isGameWon) return;
+            const {r, c} = selectedCell;
+            board[r][c] = num;
+            selectedCell.td.textContent = num === 0 ? '' : num;
+            checkWin();
+        }
+
+        function checkWin() {
+            if (isGameWon) return true;
+            for(let r=0; r<9; r++) for(let c=0; c<9; c++) if (board[r][c] === 0 || board[r][c] !== solution[r][c]) return false;
+            
+            isGameWon = true;
+            winMessage.style.display = 'block';
+            solverMessage.textContent = 'You solved it!';
+            updateSudokuSolverButtons();
+            if(selectedCell.td) selectedCell.td.classList.remove('selected');
+            return true;
+        }
+
+        function updateSudokuSolverButtons() {
+            document.querySelectorAll('#sudoku-difficulty-selector button').forEach(btn => btn.disabled = isAutoSolving || isGameWon);
+            autoSolveBtn.disabled = isAutoSolving || isGameWon;
+        }
+
+        function resetSudokuState() {
+             if (autoSolveIntervalId) clearInterval(autoSolveIntervalId);
+             isAutoSolving = false; isGameWon = false; autoSolveIntervalId = null;
+             winMessage.style.display = 'none'; solverMessage.textContent = ''; stepCounter.textContent = '';
+             updateSudokuSolverButtons();
+        }
+        
+        autoSolveBtn.addEventListener('click', () => {
+            if (isGameWon) return; 
+            prepareBoardForSolver();
+            isAutoSolving = true; updateSudokuSolverButtons(); solverMessage.textContent = "Auto-solving...";
+            let steps = [];
+            for(let r=0; r<9; r++) for(let c=0; c<9; c++) if(board[r][c] === 0) steps.push({r,c});
+            let i = 0;
+            autoSolveIntervalId = setInterval(() => {
+                if(i >= steps.length) { clearInterval(autoSolveIntervalId); checkWin(); return; }
+                const {r, c} = steps[i];
+                sudokuGrid.rows[r].cells[c].textContent = solution[r][c]; board[r][c] = solution[r][c]; i++;
+                stepCounter.textContent = `Step: ${i} / ${steps.length}`;
+            }, 50);
+        });
+
+        numberPicker.innerHTML = '';
+        for(let i=1; i<=9; i++) {
+            const numDiv = document.createElement('div');
+            numDiv.textContent = i; numDiv.dataset.number = i;
+            numDiv.addEventListener('click', () => handleNumberPick(i));
+            numberPicker.appendChild(numDiv);
+        }
+        const eraseDiv = document.createElement('div');
+        eraseDiv.textContent = 'X'; eraseDiv.classList.add('erase');
+        eraseDiv.addEventListener('click', () => handleNumberPick(0));
+        numberPicker.appendChild(eraseDiv);
+        
+        generatePuzzle(difficultyLevels.normal);
+    }
+    </script>
+</body>
+</html>
