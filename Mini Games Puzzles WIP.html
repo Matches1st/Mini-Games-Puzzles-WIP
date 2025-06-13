@@ -461,6 +461,8 @@
         nextContext.scale(BLOCK_SIZE, BLOCK_SIZE);
 
         let board, piece, nextPiece, score, gameOver, isPaused, requestId;
+        let pieceHistory = [];
+        let forbiddenPieces = {};
         const time = { start: 0, elapsed: 0, level: 1000 };
         const SHAPES = [
             [[0,0,0,0], [1,1,1,1], [0,0,0,0], [0,0,0,0]], [[1,0,0], [1,1,1], [0,0,0]], [[0,0,1], [1,1,1], [0,0,0]],
@@ -543,6 +545,10 @@
             gameOverOverlay.style.display = 'none';
             pauseOverlay.style.display = 'none';
             pauseButton.innerText = 'PAUSE';
+            
+            pieceHistory = [];
+            forbiddenPieces = {};
+
             nextPiece = createRandomPiece();
             piece = getNextPiece();
             time.start = performance.now();
@@ -551,15 +557,65 @@
         }
         
         function getNextPiece() {
+            // Decrement cooldowns for any forbidden pieces. This happens once per "turn".
+            for (const key in forbiddenPieces) {
+                forbiddenPieces[key]--;
+                if (forbiddenPieces[key] <= 0) {
+                    delete forbiddenPieces[key];
+                }
+            }
+            
             const newPiece = nextPiece;
-            nextPiece = createRandomPiece();
+
+            // Add its index to the history
+            if (typeof newPiece.index !== 'undefined') {
+                pieceHistory.push(newPiece.index);
+                if (pieceHistory.length > 3) {
+                    pieceHistory.shift();
+                }
+            }
+            
+            // Check for the 3-in-a-row condition
+            if (pieceHistory.length === 3 && pieceHistory[0] === pieceHistory[1] && pieceHistory[1] === pieceHistory[2]) {
+                const bannedIndex = pieceHistory[2];
+                // Ban the piece for 4 turns.
+                forbiddenPieces[bannedIndex] = 4;
+            }
+
+            // Generate the *next* piece, which will respect the new ban list.
+            nextPiece = createRandomPiece(); 
+
+            // Set up and return the piece to be played now.
             newPiece.x = Math.floor(COLS / 2) - Math.floor(newPiece.shape[0].length / 2);
             newPiece.y = 0;
             return newPiece;
         }
 
         function createRandomPiece() {
-            return { shape: SHAPES[Math.floor(Math.random() * SHAPES.length)], x: 0, y: 0 };
+            let chosenIndex;
+            
+            const availableIndices = [];
+            for (let i = 0; i < SHAPES.length; i++) {
+                if (!forbiddenPieces.hasOwnProperty(i)) {
+                    availableIndices.push(i);
+                }
+            }
+            
+            // Edge case: if, for some reason, all pieces are forbidden.
+            if (availableIndices.length === 0) {
+                // Pick from all pieces, not just available ones.
+                chosenIndex = Math.floor(Math.random() * SHAPES.length);
+            } else {
+                // Pick a random index from the list of *available* indices.
+                chosenIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            }
+
+            return { 
+                shape: SHAPES[chosenIndex], 
+                x: 0, 
+                y: 0, 
+                index: chosenIndex
+            };
         }
         
         function dropPiece() {
